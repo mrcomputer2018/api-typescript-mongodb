@@ -1,5 +1,12 @@
 import dotenv from 'dotenv';
+import express from 'express';
 
 dotenv.config();
 
-console.log(process.env.PORT);
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`\nServidor rodando na porta ${port}`);
+});
