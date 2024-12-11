@@ -1,5 +1,5 @@
-import { User } from "../../models/user";
-import { HttpResponse } from "../protocols";
+import { User } from '../../models/user';
+import { HttpResponse } from '../protocols';
 
 //tera as interfcaes do controller get user
 export interface IGetUsersController {
