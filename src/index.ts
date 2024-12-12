@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { MongoGetUsersRepository } from './repositories/get-users/mongo-get-users';
 import { MongoClient } from './database/mongo';
+import { MongoCreateUserRepository } from './repositories/create-user/mongo-create-user';
+import { CreateUserController } from './controllers/create-user/create-user';
 
 
 const main = async () => {
@@ -24,8 +26,20 @@ const main = async () => {
     
         const response = await getUsersController.handle();
     
-        res.send(response.body).status(response.statusCode);
+        res.json(response.body).status(response.statusCode);
     });
+
+    app.post('/users', async (req, res) => {
+        const mongoCreateUserRepository = new MongoCreateUserRepository();
+    
+        const createUserController = new CreateUserController(mongoCreateUserRepository);
+    
+        const response = await createUserController.handle({
+            body: req.body,
+        });
+    
+        res.json(response.body).status(response.statusCode);
+    }); 
 
     app.listen(port, () => {
         console.log(`\nServidor rodando na porta ${port}`);

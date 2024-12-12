@@ -1,13 +1,10 @@
 import { HttpRequest } from './../protocols';
 import { User } from '../../models/user';
 import { HttpResponse } from '../protocols';
-import { CreateUserParams, ICreateUserController } from './protocols';
-export class CreateUserController implements ICreateUserController{
-    private readonly createUserRepository: ICreateUserController;
+import { CreateUserParams, ICreateUserController, ICreateUserRepository } from './protocols';
+export class CreateUserController implements ICreateUserController{   
 
-    constructor(createUserRepository: ICreateUserController){
-        this.createUserRepository = createUserRepository;
-    }
+    constructor(private readonly createUserRepository: ICreateUserRepository){}
 
     async handle(httpRequest: HttpRequest<CreateUserParams>): Promise<HttpResponse<User>> {
         try {
@@ -18,6 +15,8 @@ export class CreateUserController implements ICreateUserController{
                     body: 'Faltando o parâmetro: body',
                 };
             }
+
+            console.log(httpRequest.body);
 
             const user = await this.createUserRepository.createUser(httpRequest.body);
 
@@ -34,5 +33,11 @@ export class CreateUserController implements ICreateUserController{
                 body: 'Alguma coisa deu errado. Tente novamente mais tarde.',
             };
         }
+    }
+
+    async createUser(params: CreateUserParams): Promise<User> {
+
+        return this.createUserRepository.createUser(params);
+
     }
 }

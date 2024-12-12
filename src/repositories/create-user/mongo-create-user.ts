@@ -6,10 +6,11 @@ export class MongoCreateUserRepository implements ICreateUserRepository {
     async createUser(params: CreateUserParams): Promise<User> {
         // implementation
         //criando user na database
-        
-        const {...insertedId } = await MongoClient.db.collection('users').insertOne(params);
+        const { insertedId } = await MongoClient.db.collection('users').insertOne(params);
         
         const user = await MongoClient.db.collection<Omit<User, 'id'>>('users').findOne({ _id: insertedId });
+
+        console.log(user);
 
         if (!user) {
             throw new Error('Usuário não foi criado!!!')
