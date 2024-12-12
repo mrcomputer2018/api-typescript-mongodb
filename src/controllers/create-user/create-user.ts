@@ -8,15 +8,17 @@ export class CreateUserController implements ICreateUserController{
 
     async handle(httpRequest: HttpRequest<CreateUserParams>): Promise<HttpResponse<User>> {
         try {
-            //validar se body existe
-            if (!httpRequest.body) {
-                return {
-                    statusCode: 400,
-                    body: 'Faltando o parâmetro: body',
-                };
-            }
+            //verificar se todos os campos obrigatorios foram preenchidos
+            const requiredFields = ['FirstName', 'lastName', 'email', 'password' ];
 
-            console.log(httpRequest.body);
+            for (const field of requiredFields) {
+                if (!httpRequest?.body?.[field as keyof CreateUserParams]?.length) {
+                    return {
+                        statusCode: 400,
+                        body: `O campo ${field} é obrigatorio`,
+                    };
+                }
+            }
 
             const user = await this.createUserRepository.createUser(httpRequest.body);
 

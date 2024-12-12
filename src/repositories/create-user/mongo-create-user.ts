@@ -10,8 +10,6 @@ export class MongoCreateUserRepository implements ICreateUserRepository {
         
         const user = await MongoClient.db.collection<Omit<User, 'id'>>('users').findOne({ _id: insertedId });
 
-        console.log(user);
-
         if (!user) {
             throw new Error('Usuário não foi criado!!!')
         }
