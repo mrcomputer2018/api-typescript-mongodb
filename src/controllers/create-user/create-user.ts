@@ -1,3 +1,4 @@
+import validadtor from "validator"
 import { HttpRequest } from './../protocols';
 import { User } from '../../models/user';
 import { HttpResponse } from '../protocols';
@@ -9,7 +10,7 @@ export class CreateUserController implements ICreateUserController{
     async handle(httpRequest: HttpRequest<CreateUserParams>): Promise<HttpResponse<User>> {
         try {
             //verificar se todos os campos obrigatorios foram preenchidos
-            const requiredFields = ['FirstName', 'lastName', 'email', 'password' ];
+            const requiredFields = ['firstName', 'lastName', 'email', 'password'];
 
             for (const field of requiredFields) {
                 if (!httpRequest?.body?.[field as keyof CreateUserParams]?.length) {
@@ -20,7 +21,19 @@ export class CreateUserController implements ICreateUserController{
                 }
             }
 
+            //verificar se maile valido
+            const emailIsValid = validadtor.isEmail(httpRequest.body!.email);
+
+            if (!emailIsValid) {
+                return {
+                    statusCode: 400,
+                    body: 'E-mail inválido',
+                };
+            }
+
             const user = await this.createUserRepository.createUser(httpRequest.body!);
+
+            console.log(user);
 
             return {
                 statusCode: 201,
