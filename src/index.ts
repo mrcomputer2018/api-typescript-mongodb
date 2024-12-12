@@ -2,25 +2,34 @@ import { GetUsersController } from './controllers/get-users/get-users';
 import dotenv from 'dotenv';
 import express from 'express';
 import { MongoGetUsersRepository } from './repositories/get-users/mongo-get-users';
+import { MongoClient } from './database/mongo';
 
-dotenv.config();
 
-const app = express();
+const main = async () => {
+    dotenv.config();
 
-app.use(express.json());
+    const app = express();
 
-const port = process.env.PORT || 3000;
+    await MongoClient.connect();
+    
 
-app.get('/users', async (req, res) => {
-    const mongoGetUsersRepository = new MongoGetUsersRepository();
+    app.use(express.json());
 
-    const getUsersController = new GetUsersController(mongoGetUsersRepository);
+    const port = process.env.PORT || 3000;
 
-    const response = await getUsersController.handle();
+    app.get('/users', async (req, res) => {
+        const mongoGetUsersRepository = new MongoGetUsersRepository();
+    
+        const getUsersController = new GetUsersController(mongoGetUsersRepository);
+    
+        const response = await getUsersController.handle();
+    
+        res.send(response.body).status(response.statusCode);
+    });
 
-    res.send(response.body).status(response.statusCode);
-});
+    app.listen(port, () => {
+        console.log(`\nServidor rodando na porta ${port}`);
+    });
+}
 
-app.listen(port, () => {
-    console.log(`\nServidor rodando na porta ${port}`);
-});
+main();
