@@ -26,7 +26,7 @@ const main = async () => {
     
         const response = await getUsersController.handle();
     
-        res.json(response.body).status(response.statusCode);
+        res.status(response.statusCode).json(response.body);
     });
 
     app.post('/users', async (req, res) => {
@@ -38,7 +38,7 @@ const main = async () => {
             body: req.body,
         });
     
-        res.json(response.body).status(response.statusCode);
+        res.status(response.statusCode).json(response.body);
     }); 
 
     app.listen(port, () => {
