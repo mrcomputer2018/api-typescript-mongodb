@@ -5,6 +5,8 @@ import { MongoGetUsersRepository } from './repositories/get-users/mongo-get-user
 import { MongoClient } from './database/mongo';
 import { MongoCreateUserRepository } from './repositories/create-user/mongo-create-user';
 import { CreateUserController } from './controllers/create-user/create-user';
+import { UpdateUserController } from './controllers/updated-users/updated-user';
+import { MongoUpdateUserRepository } from './repositories/update-user/mongo-update-user';
 
 const main = async () => {
     dotenv.config();
@@ -37,6 +39,21 @@ const main = async () => {
         );
 
         const response = await createUserController.handle({
+            body: req.body,
+        });
+
+        res.status(response.statusCode).json(response.body);
+    });
+
+    app.patch('/users/:id', async (req, res) => {
+        const mongoUpdateUserRepository = new MongoUpdateUserRepository();
+
+        const updateUserController = new UpdateUserController(
+            mongoUpdateUserRepository,
+        );
+
+        const response = await updateUserController.handle({
+            params: req.params,
             body: req.body,
         });
 
