@@ -21,7 +21,8 @@ export class UpdateUserController implements IUpdateUserController {
             const allowedFieldsToUpdate: (keyof IUpdateUserParams)[] = ['firstName', 'lastName', 'password'];
 
             const someFieldIsNotAllowedToUpdate = body && Object.keys(body).some(key => !allowedFieldsToUpdate.includes(key as keyof IUpdateUserParams));
-
+            
+            // verificando se algum campo não é permitido para atualização
             if (someFieldIsNotAllowedToUpdate) {
                 return {
                     statusCode: 400,
@@ -29,6 +30,7 @@ export class UpdateUserController implements IUpdateUserController {
                 };
             }
 
+            // verificando se o body foi informado
             if (!body) {
                 return {
                     statusCode: 400,
